@@ -57,10 +57,11 @@ public class LlamadasFachada {
                 }
             }
 
-            //TODO: Si todos estan ocupados que haria
-            if (operadorTurno != null) {
+            //Si todos estan ocupados que haria
+            if (operadorTurno == null) {
                 //que hace con la llamada
                 llamada.setEstado(Estados.NO_ASIGNADA.getId());
+                
                 logger.debug("Llamada NO asignada a un operador");
             } else {
                 llamada.setOperador(operadorTurno);
@@ -77,7 +78,7 @@ public class LlamadasFachada {
 
     /**
      * Recuperar la lista de los empleados disponibles, con algun mecanismo de
-     * cache
+     * cache, para el esta implementación quedaria pendiente
      */
     private void getListaEmpleados() {
         operadorLista = new ArrayList<>();
@@ -87,8 +88,25 @@ public class LlamadasFachada {
 
     private void asignarLLamadaEmpleado(Llamada llamada) throws GeneralExcepcion {
         //Asiga la llamada y luego actualiza las listas de disponibilidad
-        
+        actualizarListasEmpleados(llamada);
         //Se deberia persistir la informción de la llamada
         llamadaDAO.asignaLlamada(llamada);
+    }
+    
+    /**
+     * Actualiza la lista de empleados disponibles
+     * @param llamada 
+     */
+    private void actualizarListasEmpleados(Llamada llamada){
+        
+        Empleado empleadoAsignado = llamada.getOperador();
+        if (empleadoAsignado.getRol().getId().equals("DIRECTOR")){
+            directorLista.remove(empleadoAsignado);
+        } else if (empleadoAsignado.getRol().getId().equals("SUPERVISOR")){
+            supervisorLista.remove(empleadoAsignado);
+        } else {
+            operadorLista.remove(empleadoAsignado);
+        }
+        
     }
 }

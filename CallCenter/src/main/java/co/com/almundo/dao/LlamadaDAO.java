@@ -15,6 +15,10 @@ import co.com.almundo.entidades.Llamada;
  */
 public class LlamadaDAO {
     
+    /**
+     * Persite la información de la llamada
+     * @param llamada 
+     */
     public void asignaLlamada(Llamada llamada){
         //Persiste la información en la BD
     }
